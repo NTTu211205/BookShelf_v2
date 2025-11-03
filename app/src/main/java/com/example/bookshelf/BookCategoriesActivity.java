@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View; // Thêm import
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView; // Thêm import
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,7 +46,8 @@ public class BookCategoriesActivity extends AppCompatActivity {
     private RecyclerView recyclerFeatured;
     private RecyclerView recyclerNovel, recyclerChild, recyclerNonFic, recyclerShortStories, recyclerPoems;
     private TextView tvNovel, tvChild, tvNonFic, tvShortStories, tvPoems;
-    Button btShowAll;
+    private Button btShowAll;
+    private ProgressBar pbNovels, pbChild, pbNonfiction, pbShortStories, pbPoem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,12 @@ public class BookCategoriesActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+
+        pbNovels = findViewById(R.id.pbNovels);
+        pbChild = findViewById(R.id.pbChild);
+        pbNonfiction = findViewById(R.id.pbNonfiction);
+        pbPoem = findViewById(R.id.pbPoem);
+        pbShortStories = findViewById(R.id.pbShortStories);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
 
@@ -130,7 +138,49 @@ public class BookCategoriesActivity extends AppCompatActivity {
         return list;
     }
 
+    private void displayProgressBar(String category) {
+        switch (category) {
+            case NOVELS:
+                pbNovels.setVisibility(View.VISIBLE);
+                break;
+            case CHILD_AND_TEENAGER:
+                pbChild.setVisibility(View.VISIBLE);
+                break;
+            case NON_FICTION:
+                pbNonfiction.setVisibility(View.VISIBLE);
+                break;
+            case SHORT_STORIES:
+                pbShortStories.setVisibility(View.VISIBLE);
+                break;
+            case POEMS:
+                pbPoem.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    private void hideProgressBar(String category) {
+        switch (category) {
+            case NOVELS:
+                pbNovels.setVisibility(View.GONE);
+                break;
+            case CHILD_AND_TEENAGER:
+                pbChild.setVisibility(View.GONE);
+                break;
+            case NON_FICTION:
+                pbNonfiction.setVisibility(View.GONE);
+                break;
+            case SHORT_STORIES:
+                pbShortStories.setVisibility(View.GONE);
+                break;
+            case POEMS:
+                pbPoem.setVisibility(View.GONE);
+                break;
+        }
+    }
+
     private void callApiGetBooksByCategory(String category, RecyclerView recyclerView) {
+        displayProgressBar(category);
+
         Call<BookApiResponse> call = api.getBooksForCategoryName(category, 1);
         call.enqueue(new Callback<BookApiResponse>() {
             @Override
@@ -142,14 +192,19 @@ public class BookCategoriesActivity extends AppCompatActivity {
                         loadRecyclerView(recyclerView, books.subList(0, 10));
                         Log.d(category, books.size() + " ");
                     }
+
+                    hideProgressBar(category);
+
                 } else {
                     Log.d("Show novels", "Error");
+                    hideProgressBar(category);
                 }
             }
 
             @Override
             public void onFailure(Call<BookApiResponse> call, Throwable t) {
                 t.printStackTrace();
+                hideProgressBar(category);
             }
         });
     }

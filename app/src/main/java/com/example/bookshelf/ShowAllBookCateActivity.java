@@ -30,6 +30,7 @@ public class ShowAllBookCateActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     private final String[] categories = {"fiction",          // Tiểu thuyết
             "mystery",          // Trinh thám
+            "nonfiction",
             "sciencefiction",   // Khoa học viễn tưởng
             "fantasy",          // Giả tưởng
             "romance",          // Lãng mạn

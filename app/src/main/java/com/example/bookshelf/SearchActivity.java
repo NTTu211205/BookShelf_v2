@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager; // <-- THÊM IMPORT
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
@@ -39,9 +41,15 @@ public class SearchActivity extends AppCompatActivity {
     private final ApiService api = ApiClient.getClient().create(ApiService.class);
     LinearLayout lnGone, lnNearestSearch;
     RecyclerView rvBooks, rcNearest;
+    private int page;
+    ProgressBar progressBar;
     SearchView searchView;
     SearchTermAdapter adapter;
     List<SearchHistory> searchHistories;
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+    private BookAPiAdapter bookAPiAdapter;
+    final GridLayoutManager gridLayout = new GridLayoutManager(SearchActivity.this, 3);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +97,7 @@ public class SearchActivity extends AppCompatActivity {
             }
             return itemId == R.id.nav_search;
         });
-
+        progressBar = findViewById(R.id.progressBar);
         lnGone = findViewById(R.id.lnGone);
         lnNearestSearch = findViewById(R.id.lnNearestSearch);
         rvBooks = findViewById(R.id.rvBooks);
@@ -114,11 +122,12 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                page = 1;
 
-                // 1. GỌI HÀM ẨN BÀN PHÍM
+                //GỌI HÀM ẨN BÀN PHÍM
                 hideKeyboard();
 
-                // 2. XÓA TIÊU ĐIỂM KHỎI SEARCHVIEW
+                //XÓA TIÊU ĐIỂM KHỎI SEARCHVIEW
                 searchView.clearFocus();
 
                 new Thread(new Runnable() {
@@ -128,29 +137,71 @@ public class SearchActivity extends AppCompatActivity {
                     }
                 }).start();
 
-                Call<BookApiResponse> call = api.searchBook(query);
-                call.enqueue(new Callback<BookApiResponse>() {
+                loadRecyclerViewSearch(query, page);
+                rvBooks.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     @Override
-                    public void onResponse(Call<BookApiResponse> call, Response<BookApiResponse> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            BookApiResponse bookApiResponse = response.body();
-                            List<BookAPI> bookAPIS = bookApiResponse.getBooks();
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
 
-                            BookAPiAdapter bookAPiAdapter = new BookAPiAdapter(bookAPIS, SearchActivity.this);
-                            rvBooks.setLayoutManager(new GridLayoutManager(SearchActivity.this, 3));
-                            rvBooks.setAdapter(bookAPiAdapter);
-                        }
-                        else {
-                            Log.d("Search Activity", "Error call api search");
-                        }
-                    }
+                        int visibleItemCount = gridLayout.getChildCount();
+                        int totalItemCount = gridLayout.getItemCount();
 
-                    @Override
-                    public void onFailure(Call<BookApiResponse> call, Throwable t) {
-                        t.printStackTrace();
+                        int firstVisibleItemPostion = gridLayout.findFirstVisibleItemPosition();
+                        if (!isLoading && !isLastPage) {
+                            if (visibleItemCount + firstVisibleItemPostion >= totalItemCount && firstVisibleItemPostion >= 0) {
+                                page ++;
+                                loadRecyclerViewSearch(query, page);
+                            }
+                        }
                     }
                 });
                 return true;
+            }
+        });
+    }
+
+    private void loadRecyclerViewSearch(String query, int page) {
+        isLoading = true;
+        progressBar.setVisibility(View.VISIBLE);
+
+
+        Call<BookApiResponse> call = api.searchBook(query, page);
+        call.enqueue(new Callback<BookApiResponse>() {
+            @Override
+            public void onResponse(Call<BookApiResponse> call, Response<BookApiResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    BookApiResponse bookApiResponse = response.body();
+                    List<BookAPI> bookAPIS = bookApiResponse.getBooks();
+
+                    if (page == 1) {
+                        bookAPiAdapter = new BookAPiAdapter(bookAPIS, SearchActivity.this);
+                        rvBooks.setLayoutManager(gridLayout);
+                        rvBooks.setAdapter(bookAPiAdapter);
+                    }
+                    else {
+                        bookAPiAdapter.addBooks(bookAPIS);
+                    }
+
+                    if (bookApiResponse.getNext() == null) {
+                        isLastPage = true;
+                    }
+
+                    isLoading = false;
+                    progressBar.setVisibility(View.GONE);
+
+                }
+                else {
+                    Log.d("Search Activity", "Error call api search");
+                    isLoading = false;
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BookApiResponse> call, Throwable t) {
+                t.printStackTrace();
+                isLoading = false;
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

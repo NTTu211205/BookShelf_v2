@@ -69,6 +69,12 @@ public class BookAPiAdapter extends RecyclerView.Adapter<PicksHolder> {
         });
     }
 
+    public void addBooks(List<BookAPI> listBooks) {
+        int oldSize = books.size();
+        books.addAll(listBooks);
+        notifyItemRangeInserted(oldSize, listBooks.size());
+    }
+
     @Override
     public int getItemCount() {
         return books.size();

@@ -3,6 +3,8 @@ package com.example.bookshelf;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerContinue, recyclerDiscover, recyclerBestSeller;
     private NestedScrollView scrollViewHome;
     private BottomNavigationView bottomNavigationView;
-
+    ProgressBar progressBar;
     private final ApiService api = ApiClient.getClient().create(ApiService.class);
     private final String PICKS = "nonfiction";
 
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         scrollViewHome = findViewById(R.id.scrollView);
         recyclerContinue = findViewById(R.id.recyclerView_continueReading);
         recyclerBestSeller = findViewById(R.id.recyclerView_bestsellers);
+        progressBar = findViewById(R.id.progressBar);
 
         //------------------------------------------------------
         callApiGetBookByCategoryName();
@@ -106,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
 
     // function call api get book by category name
     private void callApiGetBookByCategoryName() {
+        progressBar.setVisibility(View.VISIBLE);
+
         Call<BookApiResponse> call = api.getBooksForCategoryName(PICKS, 1);
         call.enqueue(new Callback<BookApiResponse>() {
             @Override
@@ -123,15 +128,21 @@ public class MainActivity extends AppCompatActivity {
                     else {
                         Log.d("non fictions: ", "0");
                     }
+
+                    progressBar.setVisibility(View.GONE);
+
                 }
                 else {
                     Log.d("Show Picks: ", "Error");
+                    progressBar.setVisibility(View.GONE);
+
                 }
             }
 
             @Override
             public void onFailure(Call<BookApiResponse> call, Throwable t) {
                 t.printStackTrace();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

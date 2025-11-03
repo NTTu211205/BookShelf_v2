@@ -131,6 +131,16 @@
                     android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:paddingTop="16dp"/>
+
+                <ProgressBar
+                    android:id="@+id/pbNovels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -164,6 +174,16 @@
                     android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:paddingTop="16dp"/>
+
+                <ProgressBar
+                    android:id="@+id/pbChild"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -197,6 +217,16 @@
                     android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:paddingTop="16dp"/>
+
+                <ProgressBar
+                    android:id="@+id/pbNonfiction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -230,6 +260,16 @@
                     android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:paddingTop="16dp"/>
+
+                <ProgressBar
+                    android:id="@+id/pbShortStories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:indeterminateTint="@color/white"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -263,6 +303,16 @@
                     android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:paddingTop="16dp"/>
+
+                <ProgressBar
+                    android:id="@+id/pbPoem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/white"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
+
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

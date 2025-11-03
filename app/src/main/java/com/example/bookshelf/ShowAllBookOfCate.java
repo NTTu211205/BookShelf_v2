@@ -3,9 +3,12 @@ package com.example.bookshelf;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -28,8 +31,16 @@ import retrofit2.Response;
 
 public class ShowAllBookOfCate extends AppCompatActivity {
     RecyclerView rcv_Books;
+    ProgressBar progressBar;
     ImageButton imgButton;
     TextView categoriesTitle;
+    private int page = 1;
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+    BookAPiAdapter adapter;
+    private final GridLayoutManager gridLayout = new GridLayoutManager(ShowAllBookOfCate.this, 3);
+
+
     private final ApiService api = ApiClient.getClient().create(ApiService.class);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +55,8 @@ public class ShowAllBookOfCate extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+
+        progressBar = findViewById(R.id.progressBar);
 
         Intent intent = getIntent();
         String categoryName = intent.getStringExtra("categoryName");
@@ -60,13 +73,35 @@ public class ShowAllBookOfCate extends AppCompatActivity {
             getSupportActionBar().setTitle("Chi tiết sách");
         }
         rcv_Books = findViewById(R.id.rcv_Books);
-        loadRecyclerView(categoryName);
 
+        loadRecyclerView(categoryName, 1);
+
+        rcv_Books.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = gridLayout.getChildCount();
+                int totalItemCount = gridLayout.getItemCount();
+
+                int firstVisibleItemPostion = gridLayout.findFirstVisibleItemPosition();
+                if (!isLoading && !isLastPage) {
+                    if (visibleItemCount + firstVisibleItemPostion >= totalItemCount && firstVisibleItemPostion >= 0) {
+                        page ++;
+                        loadRecyclerView(categoryName, page);
+                    }
+                }
+
+            }
+        });
     }
 
 
-    private void loadRecyclerView(String categoryName) {
-        Call<BookApiResponse> call = api.getBooksForCategoryName(categoryName.toLowerCase(), 1);
+    private void loadRecyclerView(String categoryName, int page) {
+        isLoading = true;
+        progressBar.setVisibility(View.VISIBLE);
+
+        Call<BookApiResponse> call = api.getBooksForCategoryName(categoryName.toLowerCase(), page);
         call.enqueue(new Callback<BookApiResponse>() {
             @Override
             public void onResponse(Call<BookApiResponse> call, Response<BookApiResponse> response) {
@@ -74,18 +109,32 @@ public class ShowAllBookOfCate extends AppCompatActivity {
                     BookApiResponse bookApiResponse = response.body();
                     List<BookAPI> bookAPI = bookApiResponse.getBooks();
 
-                    BookAPiAdapter adapter = new BookAPiAdapter(bookAPI, ShowAllBookOfCate.this);
-                    rcv_Books.setAdapter(adapter);
-                    rcv_Books.setLayoutManager(new GridLayoutManager(ShowAllBookOfCate.this, 3));
+                    if (page == 1) {
+                        adapter = new BookAPiAdapter(bookAPI, ShowAllBookOfCate.this);
+                        rcv_Books.setAdapter(adapter);
+                        rcv_Books.setLayoutManager(gridLayout);
+                    }
+                    else {
+                        adapter.addBooks(bookAPI);
+                    }
+
+                    if (bookApiResponse.getNext() == null) {
+                        isLastPage = true;
+                    }
+
+                    isLoading = false;
+                    progressBar.setVisibility(View.GONE);
                 }
                 else {
                     Log.d("ShowAllBookOfCate", "Error");
+                    progressBar.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(Call<BookApiResponse> call, Throwable t) {
                 t.printStackTrace();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
