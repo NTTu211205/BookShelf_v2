@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/imageView_book"
+        android:layout_width="103dp"
+        android:layout_height="149dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_store_24"
+        app:tint="@android:color/white" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/textView_percent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="5dp"
+            android:text="15%" />
+
+        <ImageView
+            android:id="@+id/imgView_mark_as_read"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="50dp"
+            android:autofillHints="mark as read"
+            android:src="@drawable/marked_as_read" />
+    </LinearLayout>
+
+
+
+</LinearLayout>

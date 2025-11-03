@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".SearchActivity">
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_input_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:iconifiedByDefault="false"
+        android:queryHint="Tìm sách, tác giả, thể loại..."
+        android:background="@drawable/radius_search"
+        app:queryBackground="@android:color/transparent"
+        app:iconifiedByDefault="false"
+        app:closeIcon="@drawable/ic_close_24"
+        app:searchIcon="@drawable/ic_search_24"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        app:itemIconTint="@color/bottom_nav_colors"
+        app:itemTextColor="@color/bottom_nav_colors"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu"/>
+
+    <LinearLayout
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_input_view"
+        android:layout_above="@id/bottom_navigation_view"
+        android:orientation="vertical"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/lnGone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBooks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="15dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:id="@+id/lnNearestSearch"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="NEAREST SEARCH"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/times"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcNearest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="15dp"
+                android:orientation="vertical"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

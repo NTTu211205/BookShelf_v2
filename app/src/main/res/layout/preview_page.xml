@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#222222"
+    android:id="@+id/main"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/preview_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="175dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="169dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/times"
+            android:gravity="center_horizontal"
+            android:text="Preview"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <WebView
+        android:id="@+id/wbPreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/preview_title"/>
+
+    <!--    <androidx.core.widget.NestedScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_below="@id/preview_title"-->
+<!--        android:fillViewport="true">-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/preview_content"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:padding="15dp"-->
+<!--            android:fontFamily="@font/times"-->
+<!--            android:text="Đây là dòng đầu tiên của sách.\n\nĐây là dòng thứ hai, giới thiệu về nội dung chính.\n\nĐây là dòng thứ ba, có thể là bắt đầu của chương 1.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. (Dòng 4)\n\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. (Dòng 5)\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. (Dòng 6)\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. (Dòng 7)\n\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. (Dòng 8)\n\nĐây là dòng thứ 9, một đoạn văn ngắn.\n\nVà đây là dòng thứ 10, kết thúc phần xem trước."-->
+
+<!--            android:textColor="#E0E0E0"-->
+<!--            android:textSize="16sp"-->
+<!--            android:lineSpacingExtra="3dp" />-->
+<!--        -->
+<!--    </androidx.core.widget.NestedScrollView>-->
+
+</RelativeLayout>
