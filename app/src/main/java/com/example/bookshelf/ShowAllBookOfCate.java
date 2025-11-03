@@ -66,7 +66,7 @@ public class ShowAllBookOfCate extends AppCompatActivity {
 
 
     private void loadRecyclerView(String categoryName) {
-        Call<BookApiResponse> call = api.getBooksForCategoryName(categoryName.toLowerCase());
+        Call<BookApiResponse> call = api.getBooksForCategoryName(categoryName.toLowerCase(), 1);
         call.enqueue(new Callback<BookApiResponse>() {
             @Override
             public void onResponse(Call<BookApiResponse> call, Response<BookApiResponse> response) {

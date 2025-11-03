@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
     // function call api get book by category name
     private void callApiGetBookByCategoryName() {
-        Call<BookApiResponse> call = api.getBooksForCategoryName(PICKS);
+        Call<BookApiResponse> call = api.getBooksForCategoryName(PICKS, 1);
         call.enqueue(new Callback<BookApiResponse>() {
             @Override
             public void onResponse(Call<BookApiResponse> call, Response<BookApiResponse> response) {

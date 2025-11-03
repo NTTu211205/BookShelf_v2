@@ -131,16 +131,16 @@ public class BookCategoriesActivity extends AppCompatActivity {
     }
 
     private void callApiGetBooksByCategory(String category, RecyclerView recyclerView) {
-        Call<BookApiResponse> call = api.getBooksForCategoryName(category);
+        Call<BookApiResponse> call = api.getBooksForCategoryName(category, 1);
         call.enqueue(new Callback<BookApiResponse>() {
             @Override
             public void onResponse(Call<BookApiResponse> call, Response<BookApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<BookAPI> books = response.body().getBooks();
-                    if (!books.isEmpty()) {
-                        loadRecyclerView(recyclerView, books);
-                        Log.d(category, books.size() + " ");
 
+                    if (books.size() > 11) {
+                        loadRecyclerView(recyclerView, books.subList(0, 10));
+                        Log.d(category, books.size() + " ");
                     }
                 } else {
                     Log.d("Show novels", "Error");
