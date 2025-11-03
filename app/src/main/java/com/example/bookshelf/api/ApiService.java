@@ -16,4 +16,7 @@ public interface ApiService {
 
     @GET("books?")
     Call<BookApiResponse> getBooksForCategoryName(@Query("topic") String query);
+
+    @GET("books?")
+    Call<BookApiResponse> searchBook(@Query("search") String query);
 }

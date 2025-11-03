@@ -128,7 +128,7 @@ public class SearchActivity extends AppCompatActivity {
                     }
                 }).start();
 
-                Call<BookApiResponse> call = api.getBooksForCategoryName(query);
+                Call<BookApiResponse> call = api.searchBook(query);
                 call.enqueue(new Callback<BookApiResponse>() {
                     @Override
                     public void onResponse(Call<BookApiResponse> call, Response<BookApiResponse> response) {

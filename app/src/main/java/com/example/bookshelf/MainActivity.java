@@ -113,9 +113,12 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     BookApiResponse apiResponse = response.body();
                     List<BookAPI> books = apiResponse.getBooks();
+                    if (books.size() > 11) {
+                        books = books.subList(0, 10);
+                    }
 
                     if (!books.isEmpty()) {
-                        loadRecyclerViewBestSeller(apiResponse.getBooks());
+                        loadRecyclerViewBestSeller(books);
                     }
                     else {
                         Log.d("non fictions: ", "0");
