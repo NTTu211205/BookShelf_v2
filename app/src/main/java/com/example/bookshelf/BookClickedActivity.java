@@ -22,7 +22,12 @@ import com.bumptech.glide.Glide;
 import com.example.bookshelf.api.ApiClient;
 import com.example.bookshelf.api.ApiService;
 import com.example.bookshelf.api.models.BookAPI;
+import com.example.bookshelf.database.AppDatabase;
+import com.example.bookshelf.database.dao.BookDao;
+import com.example.bookshelf.database.models.BookDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +38,7 @@ public class BookClickedActivity extends AppCompatActivity {
     ImageButton btn_back;
     TextView book_title, book_author, book_category, tvPublishedYear, tvPageNumber, tv_book_description;
     Button btn_read_sample, btn_get;
+    private BookAPI bookAPI;
     private static ApiService api = ApiClient.getClient().create(ApiService.class);
 
     @Override
@@ -101,10 +107,66 @@ public class BookClickedActivity extends AppCompatActivity {
             }
             else return false;
         });
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                BookDao bookDao = AppDatabase.getDatabase(BookClickedActivity.this).bookDao();
+//                bookDao.deleteAll();
+//            }
+//        }).start();
+
+        btn_get = findViewById(R.id.btn_get);
+        btn_get.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        BookDao bookDao = AppDatabase.getDatabase(BookClickedActivity.this).bookDao();
+                        BookDB book = bookDao.getBook(bookAPI.getId());
+                        if (book != null) {
+                            Log.d("Notification", "Bạn đã lưu sách này rồi");
+                            return;
+                        }
+
+                        BookDB bookDB = new BookDB(
+                                bookAPI.getId(),
+                                bookAPI.getTitle(),
+                                bookAPI.getAuthors(),
+                                bookAPI.getSummaries(),
+                                bookAPI.getEditors(),
+                                bookAPI.getTranslators(),
+                                bookAPI.getSubjects(),
+                                bookAPI.getBookshelves(),
+                                bookAPI.getLanguages(),
+                                bookAPI.getCopyright(),
+                                bookAPI.getMediaType(),
+                                bookAPI.getDownloadCount(),
+                                "",
+                                ""
+                        );
+
+                        insertBook(bookDB);
+                        List<BookDB> books = bookDao.getAll();
+
+                        for (BookDB b:books) {
+                            Log.d("db", b.getId() + ", " + b.getTitle());
+                        }
+                    }
+                }).start();
+            }
+        });
+    }
+
+
+
+    private void insertBook(BookDB book) {
+        BookDao bookDao = AppDatabase.getDatabase(BookClickedActivity.this).bookDao();
+        bookDao.insert(book);
     }
 
     private void load(String bookId) {
-
         book_title = findViewById(R.id.book_title);
         book_author = findViewById(R.id.book_author);
         book_category = findViewById(R.id.book_category);
@@ -118,17 +180,17 @@ public class BookClickedActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<BookAPI> call, Response<BookAPI> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    BookAPI book = response.body();
+                    bookAPI = response.body();
 
-                    if (book != null) {
-                        book_title.setText(book.getTitle());
-                        book_author.setText(book.getAuthors());
-                        book_category.setText(book.getSubjects());
-                        tvPageNumber.setText("Downloaded · " +book.getDownloadCount() + " times");
+                    if (bookAPI != null) {
+                        book_title.setText(bookAPI.getTitle());
+                        book_author.setText(bookAPI.getAuthors());
+                        book_category.setText(bookAPI.getSubjects());
+                        tvPageNumber.setText("Downloaded · " + bookAPI.getDownloadCount() + " times");
 
                         String linkImage = null;
-                        if (book.getFormats() != null && book.getFormats().getImageJpeg() != null) {
-                            linkImage = book.getFormats().getImageJpeg();
+                        if (bookAPI.getFormats() != null && bookAPI.getFormats().getImageJpeg() != null) {
+                            linkImage = bookAPI.getFormats().getImageJpeg();
                         }
                         if (linkImage != null) {
                             linkImage = linkImage.replace("http://", "https://");
@@ -139,8 +201,8 @@ public class BookClickedActivity extends AppCompatActivity {
                                 .error(R.drawable.non_thumbnail)
                                 .into(book_cover);
 
-                        if (book.getSummaries() != null && !book.getSummaries().isEmpty()) {
-                            Spanned spannedText = HtmlCompat.fromHtml(book.getSummaries(), HtmlCompat.FROM_HTML_MODE_LEGACY);
+                        if (bookAPI.getSummaries() != null && !bookAPI.getSummaries().isEmpty()) {
+                            Spanned spannedText = HtmlCompat.fromHtml(bookAPI.getSummaries(), HtmlCompat.FROM_HTML_MODE_LEGACY);
                             tv_book_description.setText(spannedText);
                         }
                         else {
@@ -169,9 +231,4 @@ public class BookClickedActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//    }
 }

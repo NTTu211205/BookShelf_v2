@@ -13,11 +13,12 @@ import com.example.bookshelf.database.dao.SearchDao;
 //import com.example.bookshelf.database.models.BookDB;
 //import com.example.bookshelf.database.models.BookInfoDB;
 //import com.example.bookshelf.database.models.ImageLinkDB;
+import com.example.bookshelf.database.models.BookDB;
 import com.example.bookshelf.database.models.SearchHistory;
 
 @Database(
         entities = {
-                SearchHistory.class
+                SearchHistory.class, BookDB.class
         },
         version = 1
 )
@@ -27,7 +28,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
 
 
-//    public abstract BookDao bookDao();
+    public abstract BookDao bookDao();
 //    public abstract BookInfoDao bookInfoDao();
 //    public abstract ImageLinkDao imageLinkDao();
     public abstract SearchDao searchDao();

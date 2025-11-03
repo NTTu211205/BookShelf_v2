@@ -111,16 +111,24 @@ public class BookAPI {
         this.summaries = summaries;
     }
 
-    public List<Editor> getEditors() {
-        return editors;
+    public String getEditors() {
+        if (editors.isEmpty()) {
+            return "";
+        }
+
+        String stringEditor = "";
+        for (Editor e: editors) {
+            stringEditor += e.getName() + ", ";
+        }
+        return stringEditor.substring(0, stringEditor.length() - 2);
     }
 
     public void setEditors(List<Editor> editors) {
         this.editors = editors;
     }
 
-    public List<Object> getTranslators() {
-        return translators;
+    public String getTranslators() {
+        return translators.toString();
     }
 
     public void setTranslators(List<Object> translators) {
@@ -144,16 +152,16 @@ public class BookAPI {
         this.subjects = subjects;
     }
 
-    public List<String> getBookshelves() {
-        return bookshelves;
+    public String getBookshelves() {
+        return bookshelves.toString();
     }
 
     public void setBookshelves(List<String> bookshelves) {
         this.bookshelves = bookshelves;
     }
 
-    public List<String> getLanguages() {
-        return languages;
+    public String getLanguages() {
+        return languages.toString();
     }
 
     public void setLanguages(List<String> languages) {
