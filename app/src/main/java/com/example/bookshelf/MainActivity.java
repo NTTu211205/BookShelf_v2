@@ -21,6 +21,8 @@ import com.example.bookshelf.api.ApiClient;
 import com.example.bookshelf.api.ApiService;
 import com.example.bookshelf.api.models.BookAPI;
 import com.example.bookshelf.api.response.BookApiResponse;
+import com.example.bookshelf.database.AppDatabase;
+import com.example.bookshelf.database.dao.BookDao;
 import com.example.bookshelf.models.ItemContinueReading;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

@@ -21,4 +21,7 @@ public interface BookDao {
 
     @Query("delete from Book")
     void deleteAll();
+
+    @Query("delete from Book where id = :id")
+    void delete (String id);
 }

@@ -1,5 +1,6 @@
 package com.example.bookshelf;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spanned;
@@ -27,8 +28,17 @@ import com.example.bookshelf.database.dao.BookDao;
 import com.example.bookshelf.database.models.BookDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
+import okhttp3.internal.http2.Http2;
+import okhttp3.internal.http2.Http2Connection;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -108,14 +118,6 @@ public class BookClickedActivity extends AppCompatActivity {
             else return false;
         });
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                BookDao bookDao = AppDatabase.getDatabase(BookClickedActivity.this).bookDao();
-//                bookDao.deleteAll();
-//            }
-//        }).start();
-
         btn_get = findViewById(R.id.btn_get);
         btn_get.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +131,8 @@ public class BookClickedActivity extends AppCompatActivity {
                             Log.d("Notification", "Bạn đã lưu sách này rồi");
                             return;
                         }
+                        String fileName = String.valueOf(bookAPI.getId());
+                        String thumbnaiName = fileName + "_image.jpg" ;
 
                         BookDB bookDB = new BookDB(
                                 bookAPI.getId(),
@@ -143,11 +147,13 @@ public class BookClickedActivity extends AppCompatActivity {
                                 bookAPI.getCopyright(),
                                 bookAPI.getMediaType(),
                                 bookAPI.getDownloadCount(),
-                                "",
-                                ""
+                                fileName,
+                                thumbnaiName
                         );
 
                         insertBook(bookDB);
+                        download(BookClickedActivity.this, bookAPI.getFormats().getApplicationEpubZip(), fileName);
+                        download(BookClickedActivity.this, bookAPI.getFormats().getImageJpeg(), thumbnaiName);
                         List<BookDB> books = bookDao.getAll();
 
                         for (BookDB b:books) {
@@ -160,6 +166,49 @@ public class BookClickedActivity extends AppCompatActivity {
     }
 
 
+    private void download(Context context, String linkDownload, String fileName) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // noi luu file trong app
+                    File file = new File (context.getFilesDir(), fileName);
+
+                    if (file.exists()) {
+                        Log.d("Download", "Ban da tai sach nay");
+                        return;
+                    }
+
+                    // ket noi voi duong dan da cung cap
+                    URL url = new URL(linkDownload);
+                    HttpURLConnection connect = (HttpURLConnection) url.openConnection();
+                    connect.connect();
+
+                    // mo file va thuc hien doc file
+                    InputStream input = connect.getInputStream();
+                    FileOutputStream output = new FileOutputStream(file);
+
+                    byte[] buffer = new byte[4096];
+                    int len;
+
+                    while ((len = input.read(buffer)) != -1) {
+                        output.write(buffer, 0, len);
+                    }
+
+                    output.flush();
+                    output.close();
+                    input.close();
+
+                    Log.d("Download", "Tai thanh cong " + fileName);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("Download", "Tai KHONG thanh cong " + fileName);
+
+                }
+            }
+        }).start();
+    }
 
     private void insertBook(BookDB book) {
         BookDao bookDao = AppDatabase.getDatabase(BookClickedActivity.this).bookDao();
