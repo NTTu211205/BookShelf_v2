@@ -54,7 +54,7 @@ public class ReadOffline extends AppCompatActivity {
         btNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nowChapter == chapters.size()) {
+                if (nowChapter == chapters.size() - 1) {
                     return;
                 }
 

@@ -7,12 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.example.bookshelf.database.dao.BookDao;
-import com.example.bookshelf.database.dao.BookInfoDao;
-import com.example.bookshelf.database.dao.ImageLinkDao;
 import com.example.bookshelf.database.dao.SearchDao;
-//import com.example.bookshelf.database.models.BookDB;
-//import com.example.bookshelf.database.models.BookInfoDB;
-//import com.example.bookshelf.database.models.ImageLinkDB;
 import com.example.bookshelf.database.models.BookDB;
 import com.example.bookshelf.database.models.SearchHistory;
 
@@ -29,8 +24,6 @@ public abstract class AppDatabase extends RoomDatabase {
 
 
     public abstract BookDao bookDao();
-//    public abstract BookInfoDao bookInfoDao();
-//    public abstract ImageLinkDao imageLinkDao();
     public abstract SearchDao searchDao();
 
 
