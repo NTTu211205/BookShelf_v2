@@ -131,7 +131,7 @@ public class BookClickedActivity extends AppCompatActivity {
                             Log.d("Notification", "Bạn đã lưu sách này rồi");
                             return;
                         }
-                        String fileName = String.valueOf(bookAPI.getId());
+                        String fileName = String.valueOf(bookAPI.getId() + ".epub");
                         String thumbnaiName = fileName + "_image.jpg" ;
 
                         BookDB bookDB = new BookDB(

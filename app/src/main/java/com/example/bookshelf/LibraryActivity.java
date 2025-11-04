@@ -2,9 +2,11 @@ package com.example.bookshelf;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.helper.widget.Grid;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -13,10 +15,14 @@ import androidx.core.view.WindowCompat;
 // import androidx.core.view.ViewCompat;
 // import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookshelf.adapters.LibAdapter;
+import com.example.bookshelf.database.AppDatabase;
+import com.example.bookshelf.database.dao.BookDao;
+import com.example.bookshelf.database.models.BookDB;
 import com.example.bookshelf.models.LibItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -24,6 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LibraryActivity extends AppCompatActivity {
+    RecyclerView recyclerView;
+    LibAdapter adapter;
+    final GridLayoutManager gridLayoutManager = new GridLayoutManager(LibraryActivity.this, 3);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +78,28 @@ public class LibraryActivity extends AppCompatActivity {
             }
             else return itemId == R.id.nav_library;
         });
-        RecyclerView recyclerView = findViewById(R.id.recycler_library);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView = findViewById(R.id.recycler_library);
+        loadRecyclerView();
+    }
 
-        List<LibItem> bookList = new ArrayList<>();
-        bookList.add(new LibItem(R.drawable.ic_home_24, "15%"));
-        bookList.add(new LibItem(R.drawable.ic_library_24, "20%"));
+    private void loadRecyclerView() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                BookDao bookDao = AppDatabase.getDatabase(LibraryActivity.this).bookDao();
+                List<BookDB> bookList = bookDao.getAll();
+                Log.d("Library", bookList.size() + "");
 
-        LibAdapter adapter = new LibAdapter(this, bookList);
-        recyclerView.setAdapter(adapter);
+                adapter = new LibAdapter(LibraryActivity.this, bookList);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.setLayoutManager(gridLayoutManager);
+                        recyclerView.setAdapter(adapter);
+                    }
+                });
+            }
+        }).start();
+
     }
 }

@@ -1,26 +1,35 @@
 package com.example.bookshelf.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+//import com.folioreader.FolioReader;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.bookshelf.ReadOffline;
+import com.example.bookshelf.database.models.BookDB;
 import com.example.bookshelf.models.LibItem;
 import com.example.bookshelf.R;
 
+import java.io.File;
 import java.util.List;
+
+import nl.siegmann.epublib.epub.EpubReader;
 
 public class LibAdapter extends RecyclerView.Adapter<LibAdapter.LibViewHolder> {
 
     private Context context;
-    private List<LibItem> itemList;
+    private List<BookDB> itemList;
 
-    public LibAdapter(Context context, List<LibItem> itemList) {
+    public LibAdapter(Context context, List<BookDB> itemList) {
         this.context = context;
         this.itemList = itemList;
     }
@@ -34,13 +43,34 @@ public class LibAdapter extends RecyclerView.Adapter<LibAdapter.LibViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull LibViewHolder holder, int position) {
-        LibItem item = itemList.get(position);
-        holder.imageView.setImageResource(item.getImageResId());
-        holder.textPercent.setText(item.getPercent());
+        BookDB item = itemList.get(position);
+        File file = new File(context.getFilesDir(), item.getLinkThumbnail());
+
+        Glide.with(context)
+                .load(file)
+                .placeholder(R.drawable.icons8_loading_16)
+                .into(holder.imageView);
+        holder.textPercent.setText("20%");
         holder.markAsRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 holder.textPercent.setText("Read");
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File file = new File(context.getFilesDir(), item.getLinkBook());
+
+                if (file.exists()) {
+                    Intent intent = new Intent(v.getContext(), ReadOffline.class);
+                    intent.putExtra("fileName", item.getLinkBook());
+                    context.startActivity(intent);
+                }
+                else {
+                    Log.d("File to read", "File not exist");
+                }
             }
         });
     }

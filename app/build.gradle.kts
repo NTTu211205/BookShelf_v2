@@ -55,4 +55,9 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
     implementation("com.squareup.picasso:picasso:2.8")
+
+    // thu vien dung de doc epub
+    implementation (files("libs/epublib-core-3.1.jar"))
+    implementation("org.slf4j:slf4j-android:1.7.36")
+
 }
