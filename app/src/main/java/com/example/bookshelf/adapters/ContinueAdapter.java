@@ -10,17 +10,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.bookshelf.database.models.BookDB;
 import com.example.bookshelf.models.ItemContinueReading;
 import com.example.bookshelf.R;
 
+import java.io.File;
 import java.util.List;
 
 public class ContinueAdapter extends RecyclerView.Adapter<ContinueAdapter.ContinueViewHolder> {
 
     private Context context;
-    private List<ItemContinueReading> itemList;
+    private List<BookDB> itemList;
 
-    public ContinueAdapter(Context context, List<ItemContinueReading> itemList) {
+    public ContinueAdapter(Context context, List<BookDB> itemList) {
         this.context = context;
         this.itemList = itemList;
     }
@@ -34,11 +37,18 @@ public class ContinueAdapter extends RecyclerView.Adapter<ContinueAdapter.Contin
 
     @Override
     public void onBindViewHolder(@NonNull ContinueViewHolder holder, int position) {
-        ItemContinueReading item = itemList.get(position);
-        holder.imageView.setImageResource(item.getImageResId());
-        holder.textTitle.setText(item.getTitle());
-        holder.textAuthor.setText(item.getAuthor());
-        holder.textPercent.setText(item.getPercent());
+        BookDB item = itemList.get(position);
+
+        holder.textTitle.setText(item.getTitle().substring(0, 10) + "...");
+        holder.textAuthor.setText(item.getAuthors().substring(0, 10) + "...");
+        holder.textPercent.setText("20%");
+
+        // load anh bia sach
+        File file = new File(context.getFilesDir(), item.getLinkThumbnail());
+        Glide.with(context)
+                .load(file)
+                .placeholder(R.drawable.icons8_loading_16)
+                .into(holder.imageView);
     }
 
     @Override

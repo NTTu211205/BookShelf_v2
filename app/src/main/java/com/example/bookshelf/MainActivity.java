@@ -23,6 +23,7 @@ import com.example.bookshelf.api.models.BookAPI;
 import com.example.bookshelf.api.response.BookApiResponse;
 import com.example.bookshelf.database.AppDatabase;
 import com.example.bookshelf.database.dao.BookDao;
+import com.example.bookshelf.database.models.BookDB;
 import com.example.bookshelf.models.ItemContinueReading;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -66,12 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
         //------------------------------------------------------
         callApiGetBookByCategoryName();
-
-
-
-
         //-------------------------------------------------------
-        setupContinueRecycler(recyclerContinue, getContinueReadingBooks());
+        setupContinueReading(recyclerContinue);
 //        setupRecycler(recyclerDiscover, getDiscoverBooks());
 
         bottomNavigationView = findViewById(R.id.bottom_navigation_view);
@@ -158,16 +155,23 @@ public class MainActivity extends AppCompatActivity {
         recyclerBestSeller.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
     }
 
-    private void setupContinueRecycler(RecyclerView recyclerView, List<ItemContinueReading> items) {
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new ContinueAdapter(this, items));
-    }
+    private void setupContinueReading(RecyclerView recyclerView) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                BookDao bookDao = AppDatabase.getDatabase(MainActivity.this).bookDao();
+                List<BookDB> bookDBS = bookDao.getAll();
+                Log.d("Continue reading", bookDBS.size() + " ");
+                ContinueAdapter adapter = new ContinueAdapter(MainActivity.this, bookDBS);
 
-    private List<ItemContinueReading> getContinueReadingBooks() {
-        List<ItemContinueReading> list = new ArrayList<>();
-        list.add(new ItemContinueReading(R.drawable.ic_arrow_forward, "Lịch sử phần mềm", "Tác giả Trần B", "15"));
-        list.add(new ItemContinueReading(R.drawable.ic_home_24, "Lập trình Web", "Tác giả A", "20"));
-        list.add(new ItemContinueReading(R.drawable.ic_library_24, "Tâm lý học", "Tác giả X", "55"));
-        return list;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                    }
+                });
+            }
+        }).start();
     }
 }
