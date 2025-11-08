@@ -27,7 +27,7 @@ import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
 
 public class ReadOffline extends AppCompatActivity {
-    ImageButton btNext, btPre;
+    ImageButton btNext, btPre, btn_back;
     WebView wvRead;
     List<Resource> chapters;
     int nowChapter = 0;
@@ -41,6 +41,14 @@ public class ReadOffline extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        btn_back = findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
         });
 
         wvRead = findViewById(R.id.wvRead);

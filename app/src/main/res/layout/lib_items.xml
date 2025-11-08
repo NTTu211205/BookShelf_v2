@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="5dp"
-            android:text="15%" />
+            android:text="Chapter ..." />
 
         <ImageView
             android:id="@+id/imgView_mark_as_read"

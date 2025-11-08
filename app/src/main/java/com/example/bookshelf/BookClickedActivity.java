@@ -79,7 +79,6 @@ public class BookClickedActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
 
-        // --- THÊM: BUỘC BottomNavigationView LOẠI BỎ PADDING TỰ ĐỘNG ---
         if (bottomNavigationView != null) {
             bottomNavigationView.setPadding(0, 0, 0, 0);
         }
