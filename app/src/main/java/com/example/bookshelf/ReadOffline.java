@@ -7,6 +7,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import nl.siegmann.epublib.epub.EpubReader;
 public class ReadOffline extends AppCompatActivity {
     ImageButton btNext, btPre, btn_back;
     WebView wvRead;
+    TextView tvTitle;
     List<Resource> chapters;
     int nowChapter = 0;
 
@@ -54,10 +56,14 @@ public class ReadOffline extends AppCompatActivity {
         wvRead = findViewById(R.id.wvRead);
         btPre = findViewById(R.id.btPre);
         btNext = findViewById(R.id.btNext);
+        tvTitle = findViewById(R.id.tvTitle);
 
         Intent intent = getIntent();
         String fileName = intent.getStringExtra("fileName");
+        String title = intent.getStringExtra("title");
         openEpub(fileName);
+
+        tvTitle.setText(title);
 
         btNext.setOnClickListener(new View.OnClickListener() {
             @Override

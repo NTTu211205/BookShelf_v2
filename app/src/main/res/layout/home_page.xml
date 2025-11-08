@@ -96,6 +96,7 @@
                     app:cardElevation="0dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clNovels"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#6A6A6A">
@@ -168,6 +169,7 @@
                     app:cardElevation="0dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clNonfiction"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#6A6A6A">

@@ -218,7 +218,6 @@ public class BookClickedActivity extends AppCompatActivity {
         book_title = findViewById(R.id.book_title);
         book_author = findViewById(R.id.book_author);
         book_category = findViewById(R.id.book_category);
-//        tvPublishedYear = findViewById(R.id.tvPublishedYear);
         book_cover = findViewById(R.id.book_cover);
         tvPageNumber = findViewById(R.id.tvPageNumber);
         tv_book_description = findViewById(R.id.tv_book_description);

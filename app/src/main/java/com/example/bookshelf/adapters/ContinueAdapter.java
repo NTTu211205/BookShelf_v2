@@ -1,6 +1,7 @@
 package com.example.bookshelf.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.bookshelf.ReadOffline;
 import com.example.bookshelf.database.models.BookDB;
 import com.example.bookshelf.models.ItemContinueReading;
 import com.example.bookshelf.R;
@@ -49,6 +51,17 @@ public class ContinueAdapter extends RecyclerView.Adapter<ContinueAdapter.Contin
                 .load(file)
                 .placeholder(R.drawable.icons8_loading_16)
                 .into(holder.imageView);
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ReadOffline.class);
+                intent.putExtra("fileName", item.getLinkBook());
+                intent.putExtra("title", item.getTitle());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -31,11 +32,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.siegmann.epublib.epub.Main;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+    ConstraintLayout clNovels, clNonfiction;
 
     private RecyclerView recyclerContinue, recyclerDiscover, recyclerBestSeller;
     private NestedScrollView scrollViewHome;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     private final ApiService api = ApiClient.getClient().create(ApiService.class);
     private final String PICKS = "nonfiction";
+    private final String NOVELS = "novel";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +68,31 @@ public class MainActivity extends AppCompatActivity {
         recyclerContinue = findViewById(R.id.recyclerView_continueReading);
         recyclerBestSeller = findViewById(R.id.recyclerView_bestsellers);
         progressBar = findViewById(R.id.progressBar);
+        clNovels = findViewById(R.id.clNovels);
+        clNonfiction = findViewById(R.id.clNonfiction);
 
         //------------------------------------------------------
         callApiGetBookByCategoryName();
         //-------------------------------------------------------
         setupContinueReading(recyclerContinue);
-//        setupRecycler(recyclerDiscover, getDiscoverBooks());
+
+        clNovels.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ShowAllBookOfCate.class);
+                intent.putExtra("categoryName", NOVELS);
+                startActivity(intent);
+            }
+        });
+
+        clNonfiction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ShowAllBookOfCate.class);
+                intent.putExtra("categoryName", PICKS);
+                startActivity(intent);
+            }
+        });
 
         bottomNavigationView = findViewById(R.id.bottom_navigation_view);
 

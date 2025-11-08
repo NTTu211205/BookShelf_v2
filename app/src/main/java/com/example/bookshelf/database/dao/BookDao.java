@@ -13,7 +13,7 @@ public interface BookDao {
     @Insert
     void insert(BookDB book);
 
-    @Query("select * from Book")
+    @Query("select * from Book order by bookId DESC")
     List<BookDB> getAll();
 
     @Query("select * from Book where id = :queryId")

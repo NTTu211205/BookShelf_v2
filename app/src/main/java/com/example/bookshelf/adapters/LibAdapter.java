@@ -51,6 +51,7 @@ public class LibAdapter extends RecyclerView.Adapter<LibAdapter.LibViewHolder> {
                 .placeholder(R.drawable.icons8_loading_16)
                 .into(holder.imageView);
         holder.textPercent.setText("20%");
+        holder.tvTitle.setText(item.getTitle().substring(0, 10) + "...");
         holder.markAsRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +67,7 @@ public class LibAdapter extends RecyclerView.Adapter<LibAdapter.LibViewHolder> {
                 if (file.exists()) {
                     Intent intent = new Intent(v.getContext(), ReadOffline.class);
                     intent.putExtra("fileName", item.getLinkBook());
+                    intent.putExtra("title", item.getTitle());
                     context.startActivity(intent);
                 }
                 else {
@@ -82,13 +84,14 @@ public class LibAdapter extends RecyclerView.Adapter<LibAdapter.LibViewHolder> {
 
     public static class LibViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView textPercent;
+        TextView textPercent, tvTitle;
         ImageView markAsRead;
 
         public LibViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView_book);
             textPercent = itemView.findViewById(R.id.textView_percent);
+            tvTitle = itemView.findViewById(R.id.tvTitle);
             markAsRead = itemView.findViewById(R.id.imgView_mark_as_read);
         }
     }
