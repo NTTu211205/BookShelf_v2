@@ -56,6 +56,7 @@ public class LibAdapter extends RecyclerView.Adapter<LibAdapter.LibViewHolder> {
             @Override
             public void onClick(View v) {
                 holder.textPercent.setText("Read");
+                holder.markAsRead.setVisibility(View.GONE);
             }
         });
 
