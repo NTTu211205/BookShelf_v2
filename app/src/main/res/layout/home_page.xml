@@ -251,7 +251,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/times"
                         android:paddingStart="10dp"
-                        android:text="Non-Fiction Picks"
+                        android:text="Philosophy Focus"
                         android:textColor="@android:color/white"
                         android:textSize="20sp"
                         android:textStyle="bold"

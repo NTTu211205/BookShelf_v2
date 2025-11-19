@@ -1,6 +1,7 @@
 package com.example.bookshelf.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView; // Đảm bảo đã import
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bookshelf.ShowAllBookOfCate;
 import com.example.bookshelf.models.BookCateItem;
 import com.example.bookshelf.R;
 
@@ -53,14 +55,18 @@ public class BookCateAdapter extends RecyclerView.Adapter<BookCateAdapter.BookCa
         // Dùng các hàm model của bạn: getImageResId() và getType()
         holder.coverImageView.setImageResource(book.getImageResId());
         holder.textTitle.setText(book.getType());
-        // holder.textLabel sẽ giữ nguyên "FEATURED COLLECTION" từ XML
 
-        // --- 3. THÊM LẠI: Gán sự kiện click cho item ---
-//        holder.itemView.setOnClickListener(v -> {
-//            if (listener != null) {
-//                listener.onCategoryClick(book);
-//            }
-//        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String categoryName = book.getType().toLowerCase().replaceAll("\\s", "");
+
+                Intent intent = new Intent(context, ShowAllBookOfCate.class);
+                intent.putExtra("categoryName", categoryName);
+                context.startActivity(intent);
+
+            }
+        });
     }
 
     @Override
