@@ -17,12 +17,14 @@ import com.example.bookshelf.api.models.BookAPI;
 import java.util.List;
 
 public class BookAPiAdapter extends RecyclerView.Adapter<PicksHolder> {
+    String category;
     List<BookAPI> books;
     Context context;
 
-    public BookAPiAdapter(List<BookAPI> books,Context context) {
+    public BookAPiAdapter(List<BookAPI> books,Context context,String category) {
         this.books = books;
         this.context = context;
+        this.category = category;
     }
 
     @NonNull
@@ -61,8 +63,12 @@ public class BookAPiAdapter extends RecyclerView.Adapter<PicksHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int bookPosition = books.indexOf(book);
+
                 Intent intent = new Intent(v.getContext(), BookClickedActivity.class);
                 intent.putExtra("bookId", book.getId());
+                intent.putExtra("pookPosition", bookPosition);
+                intent.putExtra("categoryName", category);
                 v.getContext().startActivity(intent);
 //                ((Activity) v.getContext()).finish();
             }

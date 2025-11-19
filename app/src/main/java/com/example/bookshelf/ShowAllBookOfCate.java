@@ -39,9 +39,8 @@ public class ShowAllBookOfCate extends AppCompatActivity {
     private boolean isLastPage = false;
     BookAPiAdapter adapter;
     private final GridLayoutManager gridLayout = new GridLayoutManager(ShowAllBookOfCate.this, 3);
+    private ApiService api;
 
-
-    private final ApiService api = ApiClient.getClient().create(ApiService.class);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +54,7 @@ public class ShowAllBookOfCate extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+        api = ApiClient.getClient(this).create(ApiService.class);
 
         progressBar = findViewById(R.id.progressBar);
 
@@ -91,7 +91,6 @@ public class ShowAllBookOfCate extends AppCompatActivity {
                         loadRecyclerView(categoryName, page);
                     }
                 }
-
             }
         });
     }
@@ -110,7 +109,7 @@ public class ShowAllBookOfCate extends AppCompatActivity {
                     List<BookAPI> bookAPI = bookApiResponse.getBooks();
 
                     if (page == 1) {
-                        adapter = new BookAPiAdapter(bookAPI, ShowAllBookOfCate.this);
+                        adapter = new BookAPiAdapter(bookAPI, ShowAllBookOfCate.this, categoryName);
                         rcv_Books.setAdapter(adapter);
                         rcv_Books.setLayoutManager(gridLayout);
                     }

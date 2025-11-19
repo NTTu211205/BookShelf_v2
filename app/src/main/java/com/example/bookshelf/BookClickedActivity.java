@@ -49,7 +49,7 @@ public class BookClickedActivity extends AppCompatActivity {
     TextView book_title, book_author, book_category, tvPublishedYear, tvPageNumber, tv_book_description;
     Button btn_read_sample, btn_get;
     private BookAPI bookAPI;
-    private static ApiService api = ApiClient.getClient().create(ApiService.class);
+    private ApiService api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +64,8 @@ public class BookClickedActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+
+        api  = ApiClient.getClient(this).create(ApiService.class);
 
         Intent intent = getIntent();
         String bookId = intent.getStringExtra("bookId");

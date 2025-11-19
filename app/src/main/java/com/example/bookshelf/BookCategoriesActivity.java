@@ -23,6 +23,7 @@ import com.example.bookshelf.api.ApiService;
 import com.example.bookshelf.api.models.BookAPI;
 import com.example.bookshelf.api.response.BookApiResponse;
 import com.example.bookshelf.models.BookCateItem;
+import com.example.bookshelf.utils.InitialData;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class BookCategoriesActivity extends AppCompatActivity {
     private final String SHORT_STORIES = "short stories";
     private final String POEMS = "poems";
 
-    private final ApiService api = ApiClient.getClient().create(ApiService.class);
+    private ApiService api;
 
     private RecyclerView recyclerFeatured;
     private RecyclerView recyclerNovel, recyclerChild, recyclerNonFic, recyclerShortStories, recyclerPoems;
@@ -62,6 +63,8 @@ public class BookCategoriesActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+
+        api = ApiClient.getClient(this).create(ApiService.class);
 
         pbNovels = findViewById(R.id.pbNovels);
         pbChild = findViewById(R.id.pbChild);
@@ -120,11 +123,18 @@ public class BookCategoriesActivity extends AppCompatActivity {
         recyclerShortStories = findViewById(R.id.recycler_shortStories);
         recyclerPoems = findViewById(R.id.recycler_poems);
 
-        callApiGetBooksByCategory(NOVELS, recyclerNovel);
-        callApiGetBooksByCategory(CHILD_AND_TEENAGER, recyclerChild);
-        callApiGetBooksByCategory(NON_FICTION, recyclerNonFic);
-        callApiGetBooksByCategory(SHORT_STORIES, recyclerShortStories);
-        callApiGetBooksByCategory(POEMS, recyclerPoems);
+        List<BookAPI> novelsBooks = InitialData.novelsBooks;
+        List<BookAPI> childBooks = InitialData.childAndTeenagerBooks;
+        List<BookAPI> nonFictionBooks = InitialData.nonFictionBooks;
+        List<BookAPI> shortStoriesBooks = InitialData.shortStoriesBooks;
+        List<BookAPI> poemsBooks = InitialData.poemsBooks;
+
+        loadRecyclerView(recyclerNovel, novelsBooks, NOVELS);
+        loadRecyclerView(recyclerChild, childBooks, CHILD_AND_TEENAGER);
+        loadRecyclerView(recyclerNonFic, nonFictionBooks, NON_FICTION);
+        loadRecyclerView(recyclerShortStories, shortStoriesBooks, SHORT_STORIES);
+        loadRecyclerView(recyclerPoems, poemsBooks, POEMS);
+
     }
 
     private List<BookCateItem> getFeaturedItems() {
@@ -177,40 +187,44 @@ public class BookCategoriesActivity extends AppCompatActivity {
         }
     }
 
-    private void callApiGetBooksByCategory(String category, RecyclerView recyclerView) {
-        displayProgressBar(category);
+//    private void callApiGetBooksByCategory(String category, RecyclerView recyclerView) {
+//        displayProgressBar(category);
+//
+//        Call<BookApiResponse> call = api.getBooksForCategoryName(category, 1);
+//        call.enqueue(new Callback<BookApiResponse>() {
+//            @Override
+//            public void onResponse(Call<BookApiResponse> call, Response<BookApiResponse> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//                    List<BookAPI> books = response.body().getBooks();
+//
+//                    if (books.size() > 11) {
+//                        loadRecyclerView(recyclerView, books.subList(0, 10));
+//                        Log.d(category, books.size() + " ");
+//                    }
+//                    else {
+//                        loadRecyclerView(recyclerView, books);
+//                        Log.d(category, books.size() + " ");
+//                    }
+//
+//                    hideProgressBar(category);
+//
+//                } else {
+//                    Log.d("Show novels", "Error");
+//                    hideProgressBar(category);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<BookApiResponse> call, Throwable t) {
+//                t.printStackTrace();
+//                hideProgressBar(category);
+//            }
+//        });
+//    }
 
-        Call<BookApiResponse> call = api.getBooksForCategoryName(category, 1);
-        call.enqueue(new Callback<BookApiResponse>() {
-            @Override
-            public void onResponse(Call<BookApiResponse> call, Response<BookApiResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<BookAPI> books = response.body().getBooks();
-
-                    if (books.size() > 11) {
-                        loadRecyclerView(recyclerView, books.subList(0, 10));
-                        Log.d(category, books.size() + " ");
-                    }
-
-                    hideProgressBar(category);
-
-                } else {
-                    Log.d("Show novels", "Error");
-                    hideProgressBar(category);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BookApiResponse> call, Throwable t) {
-                t.printStackTrace();
-                hideProgressBar(category);
-            }
-        });
-    }
-
-    private void loadRecyclerView(RecyclerView recyclerView, List<BookAPI> books) {
+    private void loadRecyclerView(RecyclerView recyclerView, List<BookAPI> books, String category) {
         recyclerView.setLayoutManager(new LinearLayoutManager(BookCategoriesActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        BookAPiAdapter adapter = new BookAPiAdapter(books, BookCategoriesActivity.this);
+        BookAPiAdapter adapter = new BookAPiAdapter(books, BookCategoriesActivity.this, category);
         recyclerView.setAdapter(adapter);
     }
 }
