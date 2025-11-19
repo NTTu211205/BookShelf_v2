@@ -38,7 +38,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchActivity extends AppCompatActivity {
-    private final ApiService api = ApiClient.getClient().create(ApiService.class);
+    private ApiService api;
     LinearLayout lnGone, lnNearestSearch;
     RecyclerView rvBooks, rcNearest;
     private int page;
@@ -65,6 +65,8 @@ public class SearchActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+
+        api = ApiClient.getClient(this).create(ApiService.class);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
 
@@ -174,7 +176,7 @@ public class SearchActivity extends AppCompatActivity {
                     List<BookAPI> bookAPIS = bookApiResponse.getBooks();
 
                     if (page == 1) {
-                        bookAPiAdapter = new BookAPiAdapter(bookAPIS, SearchActivity.this);
+                        bookAPiAdapter = new BookAPiAdapter(bookAPIS, SearchActivity.this, "");
                         rvBooks.setLayoutManager(gridLayout);
                         rvBooks.setAdapter(bookAPiAdapter);
                     }

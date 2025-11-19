@@ -26,6 +26,7 @@ import com.example.bookshelf.database.AppDatabase;
 import com.example.bookshelf.database.dao.BookDao;
 import com.example.bookshelf.database.models.BookDB;
 import com.example.bookshelf.models.ItemContinueReading;
+import com.example.bookshelf.utils.InitialData;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -44,9 +45,14 @@ public class MainActivity extends AppCompatActivity {
     private NestedScrollView scrollViewHome;
     private BottomNavigationView bottomNavigationView;
     ProgressBar progressBar;
-    private final ApiService api = ApiClient.getClient().create(ApiService.class);
+    private ApiService api;
     private final String PICKS = "nonfiction";
     private final String NOVELS = "novel";
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +67,18 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+        InitialData.createInitData(MainActivity.this);
+
+
+        api = ApiClient.getClient(MainActivity.this).create(ApiService.class);
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                BookDao bookDao = AppDatabase.getDatabase(MainActivity.this).bookDao();
+//                bookDao.delete("25344");
+//            }
+//        }).start();
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,8 +90,13 @@ public class MainActivity extends AppCompatActivity {
         clNonfiction = findViewById(R.id.clNonfiction);
 
         //------------------------------------------------------
-        callApiGetBookByCategoryName();
+//        callApiGetBookByCategoryName();
         //-------------------------------------------------------
+//        List<BookAPI> booksNonFiction = InitialData.loadBooksFromAssets(MainActivity.this, "sample_data_nonfiction.json");
+        List<BookAPI> booksNonFiction = InitialData.nonFictionBooks;
+        if (booksNonFiction != null) {
+            loadRecyclerViewBestSeller(booksNonFiction, "nonfiction");
+        }
         setupContinueReading(recyclerContinue);
 
         clNovels.setOnClickListener(new View.OnClickListener() {
@@ -130,50 +153,50 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // function call api get book by category name
-    private void callApiGetBookByCategoryName() {
-        progressBar.setVisibility(View.VISIBLE);
-
-        Call<BookApiResponse> call = api.getBooksForCategoryName(PICKS, 1);
-        call.enqueue(new Callback<BookApiResponse>() {
-            @Override
-            public void onResponse(Call<BookApiResponse> call, Response<BookApiResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    BookApiResponse apiResponse = response.body();
-                    List<BookAPI> books = apiResponse.getBooks();
-                    if (books.size() > 11) {
-                        books = books.subList(0, 10);
-                    }
-
-                    if (!books.isEmpty()) {
-                        loadRecyclerViewBestSeller(books);
-                    }
-                    else {
-                        Log.d("non fictions: ", "0");
-                    }
-
-                    progressBar.setVisibility(View.GONE);
-
-                }
-                else {
-                    Log.d("Show Picks: ", "Error");
-                    progressBar.setVisibility(View.GONE);
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BookApiResponse> call, Throwable t) {
-                t.printStackTrace();
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-    }
+//    private void callApiGetBookByCategoryName() {
+//        progressBar.setVisibility(View.VISIBLE);
+//
+//        Call<BookApiResponse> call = api.getBooksForCategoryName(PICKS, 1);
+//        call.enqueue(new Callback<BookApiResponse>() {
+//            @Override
+//            public void onResponse(Call<BookApiResponse> call, Response<BookApiResponse> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//                    BookApiResponse apiResponse = response.body();
+//                    List<BookAPI> books = apiResponse.getBooks();
+//                    if (books.size() > 11) {
+//                        books = books.subList(0, 10);
+//                    }
+//
+//                    if (!books.isEmpty()) {
+//                        loadRecyclerViewBestSeller(books);
+//                    }
+//                    else {
+//                        Log.d("non fictions: ", "0");
+//                    }
+//
+//                    progressBar.setVisibility(View.GONE);
+//
+//                }
+//                else {
+//                    Log.d("Show Picks: ", "Error");
+//                    progressBar.setVisibility(View.GONE);
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<BookApiResponse> call, Throwable t) {
+//                t.printStackTrace();
+//                progressBar.setVisibility(View.GONE);
+//            }
+//        });
+//    }
 
     // function load data to recycler view
-    private void loadRecyclerViewBestSeller(List<BookAPI> books) {
+    private void loadRecyclerViewBestSeller(List<BookAPI> books, String category) {
         Log.d("nonfiction", books.size() + " ");
 
-        BookAPiAdapter adapter = new BookAPiAdapter(books, MainActivity.this);
+        BookAPiAdapter adapter = new BookAPiAdapter(books, MainActivity.this, category);
         recyclerBestSeller.setAdapter(adapter);
         recyclerBestSeller.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
     }

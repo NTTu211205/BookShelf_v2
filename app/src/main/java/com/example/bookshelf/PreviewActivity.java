@@ -34,7 +34,7 @@ import retrofit2.Response;
 public class PreviewActivity extends AppCompatActivity {
     WebView wbPreview;
     ImageButton btn_back;
-    private final ApiService api = ApiClient.getClient().create(ApiService.class);
+    private ApiService api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +53,8 @@ public class PreviewActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String bookId = intent.getStringExtra("bookId");
+
+        api = ApiClient.getClient(this).create(ApiService.class);
 
         wbPreview = findViewById(R.id.wbPreview);
         WebSettings webSettings = wbPreview.getSettings();
