@@ -32,7 +32,7 @@ public class ReadOffline extends AppCompatActivity {
     WebView wvRead;
     TextView tvTitle;
     List<Resource> chapters;
-    int nowChapter = 0;
+    int nowChapter = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +80,7 @@ public class ReadOffline extends AppCompatActivity {
         btPre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nowChapter == 0) {
+                if (nowChapter == 1) {
                     return;
                 }
 
@@ -106,7 +106,7 @@ public class ReadOffline extends AppCompatActivity {
         }
     }
 
-    private void displayChapter(int index ) {
+    private void displayChapter(int index) {
         if (chapters == null || chapters.isEmpty()) {
             return;
         }

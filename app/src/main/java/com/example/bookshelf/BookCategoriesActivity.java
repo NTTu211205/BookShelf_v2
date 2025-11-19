@@ -142,7 +142,7 @@ public class BookCategoriesActivity extends AppCompatActivity {
         list.add(new BookCateItem("Non fiction",R.drawable.non_fiction_poster));
         list.add(new BookCateItem("History",R.drawable.history_poster));
         list.add(new BookCateItem("Business",R.drawable.poster_business));
-        list.add(new BookCateItem("Computer and Programming",R.drawable.poster_computer));
+        list.add(new BookCateItem("Computer",R.drawable.poster_computer));
         list.add(new BookCateItem("Science",R.drawable.poster_science));
         return list;
     }

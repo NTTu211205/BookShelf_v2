@@ -18,7 +18,8 @@ public class InitialData {
             "sample_data_nonfiction.json",
             "sample_data_novels.json",
             "sample_data_poems.json",
-            "sample_data_shortstories.json"
+            "sample_data_shortstories.json",
+            "sample_data_philosophy.json"
     };
 
     public static List<BookAPI> nonFictionBooks;
@@ -26,6 +27,7 @@ public class InitialData {
     public static List<BookAPI> poemsBooks;
     public static List<BookAPI> childAndTeenagerBooks;
     public static List<BookAPI> novelsBooks;
+    public static List<BookAPI> philosophyBooks;
 
     public static void createInitData(Context context) {
         childAndTeenagerBooks = loadBooksFromAssets(context, fileNames[0]);
@@ -33,6 +35,7 @@ public class InitialData {
         novelsBooks = loadBooksFromAssets(context, fileNames[2]);
         poemsBooks = loadBooksFromAssets(context, fileNames[3]);
         shortStoriesBooks = loadBooksFromAssets(context, fileNames[4]);
+        philosophyBooks = loadBooksFromAssets(context, fileNames[5]);
     }
 
     private static List<BookAPI> loadBooksFromAssets(Context context, String fileName) {

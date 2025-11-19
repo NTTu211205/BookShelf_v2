@@ -89,13 +89,9 @@ public class MainActivity extends AppCompatActivity {
         clNovels = findViewById(R.id.clNovels);
         clNonfiction = findViewById(R.id.clNonfiction);
 
-        //------------------------------------------------------
-//        callApiGetBookByCategoryName();
-        //-------------------------------------------------------
-//        List<BookAPI> booksNonFiction = InitialData.loadBooksFromAssets(MainActivity.this, "sample_data_nonfiction.json");
-        List<BookAPI> booksNonFiction = InitialData.nonFictionBooks;
+        List<BookAPI> booksNonFiction = InitialData.philosophyBooks;
         if (booksNonFiction != null) {
-            loadRecyclerViewBestSeller(booksNonFiction, "nonfiction");
+            loadRecyclerViewBestSeller(booksNonFiction, "philosophy");
         }
         setupContinueReading(recyclerContinue);
 
