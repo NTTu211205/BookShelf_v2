@@ -50,8 +50,18 @@ public class LibAdapter extends RecyclerView.Adapter<LibAdapter.LibViewHolder> {
                 .load(file)
                 .placeholder(R.drawable.icons8_loading_16)
                 .into(holder.imageView);
-        holder.textPercent.setText("20%");
-        holder.tvTitle.setText(item.getTitle().substring(0, 10) + "...");
+        if (item.getAuthors().length() > 11) {
+            holder.textPercent.setText(item.getAuthors().substring(0, 10) + "...");
+        }
+        else {
+            holder.textPercent.setText(item.getAuthors());
+        }
+        if (item.getTitle().length() > 11) {
+            holder.tvTitle.setText(item.getTitle().substring(0, 10) + "...");
+        }
+        else {
+            holder.tvTitle.setText(item.getTitle());
+        }
         holder.markAsRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

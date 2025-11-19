@@ -41,8 +41,19 @@ public class ContinueAdapter extends RecyclerView.Adapter<ContinueAdapter.Contin
     public void onBindViewHolder(@NonNull ContinueViewHolder holder, int position) {
         BookDB item = itemList.get(position);
 
-        holder.textTitle.setText(item.getTitle().substring(0, 10) + "...");
-        holder.textAuthor.setText(item.getAuthors().substring(0, 10) + "...");
+        if (item.getTitle().length() > 11) {
+            holder.textTitle.setText(item.getTitle().substring(0, 10) + "...");
+        }
+        else {
+            holder.textTitle.setText(item.getTitle());
+        }
+
+        if (item.getAuthors().length() > 11) {
+            holder.textAuthor.setText(item.getAuthors().substring(0, 10) + "...");
+        }
+        else {
+            holder.textAuthor.setText(item.getAuthors());
+        }
         holder.textPercent.setText("20%");
 
         // load anh bia sach
