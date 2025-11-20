@@ -10,7 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -46,6 +49,7 @@ import retrofit2.Response;
 public class BookClickedActivity extends AppCompatActivity {
     ImageView book_cover;
     ImageButton btn_back;
+    ProgressBar progressBar;
     TextView book_title, book_author, book_category, tvPublishedYear, tvPageNumber, tv_book_description;
     Button btn_read_sample, btn_get;
     private BookAPI bookAPI;
@@ -64,6 +68,13 @@ public class BookClickedActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+        progressBar = findViewById(R.id.progressBar);
+        btn_back = findViewById(R.id.btn_back);
+        btn_read_sample = findViewById(R.id.btn_read_sample);
+        btn_get = findViewById(R.id.btn_get);
+
+        btn_read_sample.setEnabled(true);
+        btn_get.setEnabled(true);
 
         api  = ApiClient.getClient(this).create(ApiService.class);
 
@@ -71,7 +82,6 @@ public class BookClickedActivity extends AppCompatActivity {
         String bookId = intent.getStringExtra("bookId");
         load(bookId);
 
-        btn_back = findViewById(R.id.btn_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +95,6 @@ public class BookClickedActivity extends AppCompatActivity {
             bottomNavigationView.setPadding(0, 0, 0, 0);
         }
 
-        btn_read_sample = findViewById(R.id.btn_read_sample);
         btn_read_sample.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +128,6 @@ public class BookClickedActivity extends AppCompatActivity {
             else return false;
         });
 
-        btn_get = findViewById(R.id.btn_get);
         btn_get.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +138,12 @@ public class BookClickedActivity extends AppCompatActivity {
                         BookDB book = bookDao.getBook(bookAPI.getId());
                         if (book != null) {
                             Log.d("Notification", "Bạn đã lưu sách này rồi");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(BookClickedActivity.this, "Book was downloaded", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             return;
                         }
                         String fileName = String.valueOf(bookAPI.getId() + ".epub");
@@ -176,6 +190,12 @@ public class BookClickedActivity extends AppCompatActivity {
                     File file = new File (context.getFilesDir(), fileName);
 
                     if (file.exists()) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Book was downloaded", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         Log.d("Download", "Ban da tai sach nay");
                         return;
                     }
@@ -201,11 +221,21 @@ public class BookClickedActivity extends AppCompatActivity {
                     input.close();
 
                     Log.d("Download", "Tai thanh cong " + fileName);
-
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Download success", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.d("Download", "Tai KHONG thanh cong " + fileName);
-
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Download not successful, please download again /n check your internet", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         }).start();
@@ -223,12 +253,22 @@ public class BookClickedActivity extends AppCompatActivity {
         book_cover = findViewById(R.id.book_cover);
         tvPageNumber = findViewById(R.id.tvPageNumber);
         tv_book_description = findViewById(R.id.tv_book_description);
+        btn_read_sample.setEnabled(false);
+        btn_get.setEnabled(false);
+
+        progressBar.setVisibility(View.VISIBLE);
+        book_cover.setVisibility(View.INVISIBLE);
 
         Call<BookAPI> call = api.getBook(bookId);
         call.enqueue(new Callback<BookAPI>() {
             @Override
             public void onResponse(Call<BookAPI> call, Response<BookAPI> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    btn_read_sample.setEnabled(true);
+                    btn_get.setEnabled(true);
+                    book_cover.setVisibility(View.VISIBLE);
+
+                    progressBar.setVisibility(View.GONE);
                     bookAPI = response.body();
 
                     if (bookAPI != null) {
@@ -258,16 +298,19 @@ public class BookClickedActivity extends AppCompatActivity {
                             tv_book_description.setText("No description");
                         }
                     }
-
                 }
                 else {
-                    Log.d("Show book Info ", "Error");
+                    Toast.makeText(BookClickedActivity.this, "Internet disconnection", Toast.LENGTH_SHORT).show();
+                    Log.d("Show book Info ", "Error" + response.body());
+                    progressBar.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(Call<BookAPI> call, Throwable t) {
+                Toast.makeText(BookClickedActivity.this, "Internet disconnection", Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

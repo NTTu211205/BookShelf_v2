@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 //            @Override
 //            public void run() {
 //                BookDao bookDao = AppDatabase.getDatabase(MainActivity.this).bookDao();
-//                bookDao.delete("25344");
+//                bookDao.deleteAll();
 //            }
 //        }).start();
 

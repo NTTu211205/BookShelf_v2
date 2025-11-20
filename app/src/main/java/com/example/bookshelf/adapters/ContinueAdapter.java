@@ -41,23 +41,19 @@ public class ContinueAdapter extends RecyclerView.Adapter<ContinueAdapter.Contin
     public void onBindViewHolder(@NonNull ContinueViewHolder holder, int position) {
         BookDB item = itemList.get(position);
 
-        String title = item.getTitle();
-        if (title != null && title.length() > 0) {
-            int titleEndIndex = Math.min(title.length(), 10);
-            holder.textTitle.setText(title.substring(0, titleEndIndex) + (title.length() > 10 ? "..." : ""));
-        } else {
-            holder.textTitle.setText("N/A"); // Hoặc chuỗi mặc định khác
+        if (item.getTitle().length() > 11) {
+            holder.textTitle.setText(item.getTitle().substring(0, 10) + "...");
+        }
+        else {
+            holder.textTitle.setText(item.getTitle());
         }
 
-        // --- Sửa lỗi tại Dòng 44: Kiểm tra độ dài tác giả ---
-        String authors = item.getAuthors();
-        if (authors != null && authors.length() > 0) {
-            int authorEndIndex = Math.min(authors.length(), 10);
-            holder.textAuthor.setText(authors.substring(0, authorEndIndex) + (authors.length() > 10 ? "..." : ""));
-        } else {
-            holder.textAuthor.setText("N/A"); // Hoặc chuỗi mặc định khác
+        if (item.getAuthors().length() > 11) {
+            holder.textAuthor.setText(item.getAuthors().substring(0, 10) + "...");
         }
-
+        else {
+            holder.textAuthor.setText(item.getAuthors());
+        }
         holder.textPercent.setText("20%");
 
         // load anh bia sach
