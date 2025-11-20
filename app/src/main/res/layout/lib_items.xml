@@ -38,7 +38,7 @@
             android:id="@+id/imgView_mark_as_read"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="50dp"
+            android:paddingLeft="0dp"
             android:autofillHints="mark as read"
             android:src="@drawable/marked_as_read" />
     </LinearLayout>
