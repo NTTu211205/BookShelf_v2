@@ -51,15 +51,24 @@ public class LibAdapter extends RecyclerView.Adapter<LibAdapter.LibViewHolder> {
                 .placeholder(R.drawable.icons8_loading_16)
                 .into(holder.imageView);
         holder.textPercent.setText("20%");
-        holder.tvTitle.setText(item.getTitle().substring(0, 10) + "...");
+        String title = item.getTitle();
+        if (title != null && !title.isEmpty()) {
+            int titleEndIndex = Math.min(title.length(), 10);
+            String displayTitle = title.substring(0, titleEndIndex);
+            if (title.length() > 10) {
+                displayTitle += "...";
+            }
+            holder.tvTitle.setText(displayTitle);
+        } else {
+            holder.tvTitle.setText("Không rõ tiêu đề");
+        }
         holder.markAsRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.textPercent.setText("Read");
-                holder.markAsRead.setVisibility(View.GONE);
+                holder.textPercent.setText("Read"); // Dòng này bị mất
+                holder.markAsRead.setVisibility(View.GONE); // Dòng này bị mất
             }
         });
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
